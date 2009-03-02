@@ -1,0 +1,23 @@
+[general]
+password	string	(empty)	Required for making changes to thumbnails and captions. This must contain some characters in order to work.
+title	string	"Some Fine Photos"	Title of the gallery
+subtitle	string	"Enjoy"	Subtitle of the gallery
+picturesdir	string	"."	The directory where the enlarged images live
+thumbsdir	string	"qthumbs"	The directory where the thumbnail images will live and be generated into
+template	string	"qtemplate.html"	The file containing the template. Must conform to template rules (specified below).
+quicknail_script	string	"index.php"	The name of the main script. If you decide to change the name of the script, you must rename the file and update this variable.
+[gallery]
+thumbsize	(integer)	190	Image size for the thumbnails
+picsperline	(integer)	4	Amount of images in the horizontal direction
+picsperpage	(integer)	12	Total images per page
+slidespeed	(integer)	5	Seconds between slides
+show_image_names	(true/false)	false	Show the filename below the image
+show_credit	(true/false)	true	Show the credit for QuickNail
+[image]
+enlargesize	(integer)	550	Image size for the enlarged image
+show_captions	(true/false)	true	Show the caption algon with the enlarged image
+clickfull	(true/false)	true	Allow the enlarged image to be clicked to see it full size. Only works when the lightbox is off.
+prevent_enlarged_overscaling	(true/false)	true	Precents enlarged images from being scaled larger then their original dimensions.
+lightbox	(true/false)	true	Turn on the lightbox slide feature. Requires JavaScript.
+lightbox_dim_background	(0..1)	0.75	For dimming the background behind the lightbox slides. 1=black background, 0=no dimming
+lightbox_slidestyle	(integer)	1	Styling for the lightbox slides. 1=borderless dark, 2=dark, 3=white, 4=glowing white, 5=drop shadow white

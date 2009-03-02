@@ -312,10 +312,13 @@ a:hover {  color: #FF9933; text-decoration: none; }
 </style>
 HEAD;
 
+	if ($title)
+		$t = "<a href=$script>$title</a> /";
+
 	$content =<<<CONTENT
 <table border=0 align=center><tr>
-<td align=left><b><a href=$script>$title</a> / $choppedname</b></td>
-<td align=right><a href=$previous>&#8592; previous</a> | <a href=.>$index of $totalfiles</a> | <a href=$next>next &#8594;</a></td>
+<td align=left><b>$t $choppedname</b></td>
+<td align=right><a href=$previous>&#8592; previous</a> | <a href=$script>$index of $totalfiles</a> | <a href=$next>next &#8594;</a></td>
 </tr><tr><td align=center colspan=2><br>
 	<table cellpadding=0 cellspacing=7 class=picborder><tr><td>$img<br> $caption</td></tr></table>
 </div></td></tr></table>
@@ -337,7 +340,7 @@ function showGallery()
 	$ss = $conf[gallery][slidespeed] * 1000;
 	
 	//1=borderless dark, 2=dark, 3=white, 4=glowing white, 5=drop shadow white
-	switch($conf[gallery][lightbox_slidestyle]) {
+	switch($conf[image][lightbox_slidestyle]) {
 	
 		// for case 1 see default	
 		
@@ -387,6 +390,12 @@ function showGallery()
 	
 	hs.fadeInOut = true;
 	hs.dimmingOpacity = $dim;
+	
+	// define the restraining box
+//	hs.useBox = true;
+//	hs.width = 640;
+//	hs.height = 480;
+
 
 	// Add the controlbar
 	if (hs.addSlideshow) hs.addSlideshow({
@@ -563,7 +572,7 @@ TMPL;
 
 	# check user defined vars
 
-	if (empty($conf[general][title])) $conf[general][title] = "My Photo Gallery";
+//	if (empty($conf[general][title])) $conf[general][title] = "My Photo Gallery";
 	if (!is_bool($conf[image][lightbox])) $conf[image][lightbox] = false;
 	if (!is_integer($conf[gallery][picsperline])) $conf[gallery][picsperline] = 3;
 	if (!is_integer($conf[gallery][picsperpage])) $conf[gallery][picsperpage] = 12;
