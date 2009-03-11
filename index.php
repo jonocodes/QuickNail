@@ -3,7 +3,7 @@
 $quicknail_homepage = "http://quicknail.foodnotblogs.com";
 
 #
-# QuickNail 3.3 by Jono - jfinger@gmail.com (February 2009)
+# QuickNail by Jono - jfinger@gmail.com
 # http://quicknail.foodnotblogs.com
 #
 #
