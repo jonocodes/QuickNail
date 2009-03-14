@@ -1,12 +1,11 @@
 <?
+/**
+ * QuickNail by Jono - jonojuggles@gmail.com
+ * http://quicknail.foodnotblogs.com
+ */
 
 $quicknail_homepage = "http://quicknail.foodnotblogs.com";
 
-#
-# QuickNail by Jono - jfinger@gmail.com
-# http://quicknail.foodnotblogs.com
-#
-#
 
 // INI file read/write functions
 
@@ -414,31 +413,31 @@ function showGallery()
 
 
 <style>
-a {	text-decoration:none;	}
-a:hover {  color: #FF9933; text-decoration: none; }
+
+.quicknailcontent * {
+	font-family: Verdana, Helvetica;
+	font-size: 10pt;
+}
+
+.quicknailcontent h1 {  font-size: 18pt; }
+
+.quicknailcontent a {	text-decoration:none;	}
+.quicknailcontent a:hover {  color: #FF9933; text-decoration: none; }
 .picborder { border: 1px solid #C2C2C2 }
-a.linkopacity img {
+.quicknailcontent a.linkopacity img {
 	filter:alpha(opacity=100); 
 	-moz-opacity: 1.0;
 	opacity: 1.0;
 	-khtml-opacity: 1.0;
 	}
 
-a.linkopacity:hover img {
+.quicknailcontent a.linkopacity:hover img {
 	filter:alpha(opacity=80);
 	-moz-opacity: 0.8;
 	opacity: 0.8;
 	-khtml-opacity: 0.8;
 }
 
-* {
-	font-family: Verdana, Helvetica;
-	font-size: 10pt;
-}
-
-h1 {
-	font-size: 18pt;
-}
 </style>
 HEAD;
 
@@ -446,7 +445,7 @@ HEAD;
 	<font size=-1>gallery powered by <a href=$quicknail_homepage>QuickNail</a></font>
 CREDIT;
 
-	$content .= "<h1 align=center>" . $conf[general][title] . "</h1>";
+	$content .= "<div class=quicknailcontent><h1 align=center>" . $conf[general][title] . "</h1>";
 	$content .= "<p /><center>" . $conf[general][subtitle] . "</center>";
 	$content .= "<p /><div class=highslide-gallery><table width=100% cellspacing=10 cellpadding=0 border=0><tr>";
 
@@ -507,6 +506,8 @@ CREDIT;
 	
 	if ($conf[gallery][show_credit])	$content .= $credit;
 
+	$content .= "</div>";
+
 	show_page($template_text, $gallery_header, $conf[general][title], $content);
 }
 
@@ -545,7 +546,14 @@ function check_dependencies() {
 				die("Error: QuickNail cannot be used without '$file'");
 }
 
-
+/**
+ * Loads config from a file into to a global variable.
+ *
+ * @global string $PHP_SELF
+ * @global string $template_text
+ * @global array $conf
+ * @param string $configfile
+ */
 function load_config($configfile) {
 	global $PHP_SELF, $template_text, $conf;
 
@@ -595,10 +603,16 @@ TMPL;
 
 # MAIN starts here
 
+//$qnpage = "galleryhome";	# needed for including this page from admin area
+
+if (!$galhomeasinclude) {
+
+
 $common_folder= "qcommon";
 
 check_dependencies();
-load_config("config.ini");
+load_config("config.ini");	# populates $config
+
 
 # check too see if there are not any images
 $pictures = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby);
@@ -624,5 +638,7 @@ else if ($mode == "slideshow")
 	enlargeImage($filename, true);
 else
 	showGallery();
+
+}
 
 ?>

@@ -1,170 +1,10 @@
 <?
 #
-# QuickNail by Jono - jfinger@gmail.com
+# QuickNail by Jono - jonojuggles@gmail.com
 # http://quicknail.foodnotblogs.com
 #
 #
 
-// INI file read/write functions
-
-function isInteger($input){
-	if (is_int($input))	return true;	// for integers
-	return preg_match('@^[-]?[0-9]+$@',$input) === 1;	// for strings
-}	
-
-function isBool($input) {
-	return in_array($input, array('true', 'True', 'TRUE', true, 1, 'false', 'False', 'FALSE', 'false', 0), true);
-}
-
-function makeBool($input) {
-	return (in_array($input, array('true', 'True', 'TRUE', true, 1), true));
-}
-
-function read_ini_file($f, &$r)
-{
-	$null = "";
-	$r=$null;
-	$first_char = "";
-	$sec=$null;
-	$comment_chars=";#";
-	$num_comments = "0";
-	$num_newline = "0";
-
-	//Read to end of file with the newlines still attached into $f
-	$f = @file($f);
-	if ($f === false)
-		return -2;
-
-	// Process all lines from 0 to count($f)
-	for ($i=0; $i<@count($f); $i++)
-	{
-		$w=@trim($f[$i]);
-		$first_char = @substr($w,0,1);
-		if ($w)
-		{
-			if ((@substr($w,0,1)=="[") and (@substr($w,-1,1))=="]") {
-				$sec=@substr($w,1,@strlen($w)-2);
-				$num_comments = 0;
-				$num_newline = 0;
-			}
-			else if ((stristr($comment_chars, $first_char) == true)) {
-				$r[$sec]["Comment_".$num_comments]=$w;
-				$num_comments = $num_comments +1;
-			}			   
-			else {
-				// Look for the = char to allow us to split the section into key and value
-				$w=@explode("=",$w);
-				$k=@trim($w[0]);
-				unset($w[0]);
-				$v=@trim(@implode("=",$w));
-				// look for the new lines
-				if ((@substr($v,0,1)=="\"") and (@substr($v,-1,1)=="\"")) {
-					$v=@substr($v,1,@strlen($v)-2);
-				}
-					
-				// check for type and convert to them
-				if (isBool($v))
-					$v = makeBool($v);
-				else if (isInteger($v))
-					$v = (int)$v;
-				// else, it is a string
-				
-				$r[$sec][$k]=$v;
-				   
-			}
-		}
-		else {
-			$r[$sec]["Newline_".$num_newline]=$w;
-			$num_newline = $num_newline +1;
-		}
-	}
-	return 1;
-}
-
-
-
-function beginsWith( $str, $sub ) {
-	return ( substr( $str, 0, strlen( $sub ) ) === $sub );
-}
-
-function write_ini_file($path, $assoc_arr) {
-	$content = "";
-
-	foreach ($assoc_arr as $key=>$elem) {
-		if (is_array($elem)) {
-			if ($key != '') 
-				$content .= "[".$key."]\r\n";
-		   
-			foreach ($elem as $key2=>$elem2) {
-				if (beginsWith($key2,'Comment_') == 1 && beginsWith($elem2,';'))
-					$content .= $elem2."\r\n";
-				else if (beginsWith($key2,'Newline_') == 1 && ($elem2 == ''))
-					$content .= $elem2."\r\n";
-				else
-					$content .= $key2." = ".$elem2."\r\n";
-			}
-		}
-		else 
-			$content .= $key." = ".$elem."\r\n";
-	}
-
-	if (!$handle = fopen($path, 'w'))
-		return -2;
-	if (!fwrite($handle, $content))
-		return -2;
-		
-	fclose($handle);
-	return 1;
-}
-
-
-
-function load_config($configfile) {
-	global $PHP_SELF, $template_text, $conf;
-
-	read_ini_file($configfile, $conf);
-
-	# prepare template
-	if (file_exists($conf[general][template]))
-		$template_text = file_get_contents($conf[general][template]);
-	else {
-		$template_text =<<<TMPL
-	<html><head><title>% QUICKNAIL_TITLE %</title>
-	<style type=text/css>IMG { BORDER-style: none; }</style>
-	% QUICKNAIL_HEAD %
-	</head><body bgcolor=white>
-	% QUICKNAIL_MAINCONTENT %
-	</body></html>
-TMPL;
-	}
-
-	if (empty($conf[general][title])) {
-		$dirs = split("/", $PHP_SELF);
-		$conf[general][title] = $dirs[count($dirs)-2];
-	}
-
-	# check user defined vars
-
-	if (empty($conf[general][title])) $conf[general][title] = "My Photo Gallery";
-	if (!is_bool($conf[image][lightbox])) $conf[image][lightbox] = false;
-	if (!is_integer($conf[gallery][picsperline])) $conf[gallery][picsperline] = 3;
-	if (!is_integer($conf[gallery][picsperpage])) $conf[gallery][picsperpage] = 12;
-	if (!is_integer($conf[gallery][slidespeed])) $conf[gallery][slidespeed] = 4;
-	if (!is_integer($conf[image][enlargesize])) $conf[image][enlargesize] = 600;
-	if (!is_bool($conf[image][clickfull])) $conf[image][clickfull] = true;
-
-	if (!is_bool($conf[image][show_credit])) $conf[image][show_credit] = true;
-	if (!is_integer($conf[image][thumbsize])) $conf[image][thumbsize] = 180;
-	if (!is_bool($conf[gallery][show_image_names])) $conf[gallery][show_image_names] = false;
-	if (!is_bool($conf[image][show_captions])) $conf[image][show_captions] = true;
-
-	if (empty($conf[general][picturesdir])) $conf[general][picturesdir] = ".";
-	if (empty($conf[general][thumbsdir]))	$conf[general][thumbsdir] = "thumbs";
-	if (!is_bool($conf[image][prevent_enlarged_overscaling]))	$conf[image][prevent_enlarged_overscaling] = true;
-
-	if ($conf[image][lightbox_dim_background] < 0 || $conf[image][lightbox_dim_background] > 1)
-		$conf[image][lightbox_dim_background] = 0.75;
-}
 
 function newIPTC($image_name, $fields)
 {
@@ -234,19 +74,6 @@ function dump_iptc($filename) {
 	}
 }
 
-# currently only checks captions
-function get_iptc($filename) {
-
-	$iptc_fields = array();
-	$size = GetImageSize ($filename,$info);
-	$iptc = iptcparse ($info["APP13"]);
-
-	if (isset($info["APP13"])) {
-		$iptc = iptcparse($info["APP13"]);
-		$iptc_fields[caption] = $iptc["2#120"][0];
-	}
-	return $iptc_fields;
-}
 
 
 function update_iptc($image_name, $fields) {
@@ -288,7 +115,7 @@ function update_iptc($image_name, $fields) {
 function show_all_captions($pictures) {
 	global $script;
 	
-	print "<form method=post action=$script><input type=hidden name=mode value=updatecaptions><table border=0 cellpadding=10 align=center>";
+	print "<form method=post action=$script><input type=hidden name=mode value=updatecaptions><table border=0 cellpadding=10>";
 	
 	foreach ($pictures as $picture)
 	{
@@ -424,75 +251,94 @@ function generatethumbs($pictures, $picturesdir, $thumbsdir, $fullrefresh=false)
 
 
 
-# generate filenames, thumbnails and captions lists
-function generate_file_list($dir, $thumbsdir, $sortby) {
+
+function deletethumbs($pictures, $picturesdir, $thumbsdir) {
 	global $conf;
+	print "deleting thumbnails<br><br>";
+	
+	foreach ($pictures as $pid => $picture) {
+	
+		$thisthumb = "$thumbsdir/." . substr($picture[file], strlen($picturesdir));
 
-	function cmp_date($a, $b) {
-	//	return strcmp($a["sortfield"], $b["sortfield"]);
+		if (file_exists($thisthumb)) {
+			print " removing " . "$thisthumb <br />";
+			unlink($thisthumb);
+		}	
+	}
+}
 
-		if ($a["sortfield"] == $b["sortfield"])	return 0;
-		return ($a["sortfield"] < $b["sortfield"]) ? -1 : 1;
+function showsummary($pictures, $picturesdir, $thumbsdir) {
+	global $conf;
+	
+	$thumbcount=0;
+	$captioncount=0;
+
+	foreach ($pictures as $pid => $picture) {
+	
+		$thisthumb = "$thumbsdir/." . substr($picture[file], strlen($picturesdir));
+		
+		if (file_exists($thisthumb))
+			$thumbcount++;
+
+		if ($picture[caption] != "")
+			$captioncount++;
 	}
 
-	function cmp_fname($a, $b) {
-		return strnatcasecmp($a["sortfield"], $b["sortfield"]);
+	print "<table align=center width=200 height=95% border=0><tr><td valign=center>";
+	print "<h1>" . $conf[general][title] . "</h1><b>";
+	print "Pictures: " . count($pictures) . "<br><br>";
+	print "Thumbnails: $thumbcount <br><br> Captions: $captioncount";
+	print "</td></tr></table>";
+
+
+}
+
+function showgeneralsettings() {
+	global $conf_fromfile;
+	
+
+	print "<table align=center border=0 cellpadding=5>";
+
+	foreach ($conf_fromfile as $sectitle => $thissection)
+	if ($sectitle != "") {
+		print "<tr><td colspan=2 align=center height=70><h2>" . ucfirst($sectitle) . " Settings</h2></td></tr>";
+
+		foreach ($thissection as $key => $val) {
+			if ($val != "" && $key != "password"){
+				$formattedkey = ereg_replace("_", " ", ucfirst($key));
+				$formattedval = $val;
+				if (is_bool($val) && $val==0)
+					$formattedval = "true";
+				else if (is_bool($val) && $val==1)
+					$formattedval = "false";
+					
+				print "<tr><td align=right width=50%><b>". $formattedkey ."</b></td><td>" . $formattedval . "</td></tr>";
+			}
+		}
 	}
 
-	if ($sortby != "date")	$sortby = "fname";
+	print "</table>";
 
-	$dh  = opendir($dir);
-	while (false !== ($fn = readdir($dh))) {
-		if ( (strcasecmp( substr($fn, -3), "jpg")==0) ||
-			(strcasecmp( substr($fn, -4), "jpeg")==0) ) {
-			
-			$filename = "$dir/$fn";
-			$thumbname = "$thumbsdir/$fn";
-			
-			$tprename = ereg_replace("(.*\/)([^\/]*)","\\1", $conf[general][quicknail_script]);
-			
-			$tfilename = urlencode(substr($filename, strlen($tprename)));
-			
-			$fields = get_iptc($filename);
-			$caption = $fields[caption];
-			
-			$picture[caption] = $caption;
-			$picture[file] = $filename;
-			
-			if ($sortby == "date")
-				$picture[sortfield] = filemtime($filename);	//filectime($fn);
-			else
-				$picture[sortfield] = $filename;
-			
-			if (file_exists($thumbname))
-				$picture[thumbnail] = $thumbname;
-			else
-				$picture[thumbnail] = $conf[general][quicknail_script] . "?mode=image&filename=" . $tfilename . "&max=" . $conf[gallery][thumbsize];
-				
-			$pictures[] = $picture;
-   		}
-	}
-	if (!empty($pictures))
-		usort($pictures, "cmp_$sortby");
 
-	return $pictures;
 }
 
 
 # main()
 
-include("index.php");
+$quicknailversion="0.5.1";
+$basedir = "..";
+
+$galhomeasinclude=true; # needed for including the gallery home functions
+
+include("index.php");	# for authentication
+include("../index.php");	# to get functions		needs to have a dynamic name
 
 session_start();
 
-if (!logged_in()) {
-	header('Location: index.php');
-	exit;
-}
-
-$basedir = "..";
 
 load_config("$basedir/config.ini");
+
+$conf_fromfile = $conf;
 
 $conf[general][picturesdir] = "$basedir/" . $conf[general][picturesdir];
 $conf[general][thumbsdir] = "$basedir/" . $conf[general][thumbsdir];
@@ -505,24 +351,154 @@ $mode = $_REQUEST{mode};
 $pictures = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby);
 
 
-print "<center><h1>Manage Images</h1></center><br />";
+if (!logged_in()) {
+	header('Location: index.php');
+	exit;
+}
+
+if ($mode == "logout") {
+	print "You are now logged out.<br><a href=index.php>Log in</a><br><a href=" . $conf[general][quicknail_script] . ">View Gallery</a>";
+	$_SESSION[authenticated] = false;
+	unset($_SESSION[authenticated]);
+	exit;
+}
+
 
 if (empty($pictures))
 	die("There are no pictures in pictures directory.");
 
-//print_r($_SESSION);
+?>
 
-print "<center><a href=$script?mode=showcaptions>captions</a> | <a href=$script?mode=checkthumbs>thumbnails</a> | <a href=" . $conf[general][quicknail_script] . ">gallery</a> | <a href=logout.php>logout</a></center><br>";
+<style type="text/css">
 
-if ($mode == "showcaptions")
+body{
+margin: 0;
+padding: 0;
+border: 0;
+overflow: hidden;
+height: 100%; 
+max-height: 100%; 
+}
+
+#framecontent{
+position: absolute;
+top: 0;
+bottom: 0; 
+left: 0;
+width: 200px; /*Width of frame div*/
+height: 100%;
+overflow: hidden; /*Disable scrollbars. Set to "scroll" to enable*/
+background: #cc9;
+color: white;
+}
+
+#maincontent{
+position: fixed;
+top: 0; 
+left: 200px; /*Set left value to WidthOfFrameDiv*/
+right: 0;
+bottom: 0;
+overflow: auto; 
+background: #fff;
+}
+
+.innertube{
+margin: 15px; /*Margins for inner DIV inside each DIV (to provide padding)*/
+}
+
+#framecontent h1 {
+color: #330;
+font-size: 22px;
+}
+
+#framecontent h2 {
+color: #330;
+font-size: 18px;
+}
+
+ul.qmenu{
+	list-style: none;
+	margin-left: 0;
+	padding-left: 1em;
+	text-indent: -1em;
+
+}
+
+ul.qmenu li:before {
+	content: "\00BB \0020";
+}
+
+
+* html body{ /*IE6 hack*/
+padding: 0 0 0 200px; /*Set value to (0 0 0 WidthOfFrameDiv)*/
+}
+
+* html #maincontent{ /*IE6 hack*/
+height: 100%; 
+width: 100%; 
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div id="framecontent">
+<div class="innertube">
+
+<h1>QuickNail Admin</h1>
+<h2><? echo $conf[general][title]; ?></h2>
+
+<br>
+<ul class=qmenu>
+
+<li><a href=<? echo $script ?>>Summary</a>
+<li><a href=<? echo $script ?>?mode=showgeneralsettings>Settings</a>
+<li><a href=<? echo $script ?>?mode=showcaptions>Captions</a>
+<li><a href=<? echo $script ?>?mode=checkthumbs>Thumbnails</a>
+	<ul>
+		<li><a href=<? echo $script ?>?mode=checkthumbs>Check</a>
+		<li><a href=<? echo $script ?>?mode=generatemissingthumbs>Generate Missing</a>
+		<li><a href=<? echo $script ?>?mode=regeneratethumbs>Re-generate All</a>
+		<li><a href=<? echo $script ?>?mode=deletethumbs>Delete All</a>
+	</ul>
+</ul>
+
+
+<ul class=qmenu>
+<li><a href=<? echo $conf[general][quicknail_script] ?> >View gallery</a>
+<li><a href=http://quicknail.foodnotblogs.com>QuickNail Home Page</a>
+<li><a href=http://quicknail.foodnotblogs.com/updates.php?fromversion=<? echo $quicknailversion ?> >QuickNail Updates</a>
+<li><a href=<? echo $script ?>?mode=logout>Logout</a></center>
+</ul>
+
+</div>
+</div>
+
+
+<div id="maincontent">
+<div class="innertube">
+
+<table border=0 width=85% height=90% align=center><tr><td td valign=top>
+
+<?
+
+// print "<center><a href=$script?mode=showcaptions>captions</a> | <a href=$script?mode=checkthumbs>thumbnails</a> | <a href=" . $conf[general][quicknail_script] . ">gallery</a> | <a href=logout.php>logout</a></center><br>";
+
+if ($mode == "showcaptions") {
+	print "<h3>Captions</h3>";
 	show_all_captions( $pictures );
+}
+else if ($mode == "updatecaptions") {
 
-elseif ($mode == "updatecaptions") {
+	print "<h3>Captions</h3>";
+
 	if (count($_POST) != 0) {
 
 		foreach ($pictures as $picture)
 			$captions[$picture[file]] = $picture[caption];
-	
+
 		foreach ($_POST as $file => $caption) {
 			$file = preg_replace("/---/",".", preg_replace("/____/"," ",$file));
 		
@@ -534,12 +510,35 @@ elseif ($mode == "updatecaptions") {
 	}
 }
 else if ($mode == "checkthumbs") {
+	print "<h3>Thumbnails</h3>";
 	checkthumbs($pictures);
-	
-	print "<br><form method=post action=$script><input type=hidden name=mode value=generatethumbs> <input type=Submit value=\"Generate New Thumbnails\"></form>";
 }
-else if ($mode == "generatethumbs"){
-	generatethumbs($pictures, $conf[general][picturesdir], $conf[general][thumbsdir]);
+else if ($mode == "generatemissingthumbs"){
+	print "<h3>Thumbnails</h3>";
+	generatethumbs($pictures, $conf[general][picturesdir], $conf[general][thumbsdir], false);
+}
+else if ($mode == "regeneratethumbs"){
+	print "<h3>Thumbnails</h3>";
+	generatethumbs($pictures, $conf[general][picturesdir], $conf[general][thumbsdir], true);
+}
+else if ($mode == "deletethumbs"){
+	print "<h3>Thumbnails</h3>";
+	deletethumbs($pictures, $conf[general][picturesdir], $conf[general][thumbsdir]);
+} 
+else if ($mode == "showgeneralsettings") {
+	showgeneralsettings();
+} else {
+	showsummary($pictures, $conf[general][picturesdir], $conf[general][thumbsdir]);
 }
 
 ?>
+
+</td></tr></table>
+
+
+</div>
+</div>
+
+</body>
+</html>
+

@@ -1,38 +1,5 @@
 <?
 
-// depricated
-function generate_htpasswd($password) {
-	
-	exec("htpasswd -cb .htpasswd admin $password");
-}
-
-// depricated
-function generate_htaccess() {	// new file creation problem
-	
-	$cwd = getcwd();
-
-	exec('echo AuthUserFile ' . $cwd . '/.htpasswd > .htaccess');
-	exec('echo AuthType Basic >> .htaccess');
-	exec('echo AuthName \"QuickNail Admin Area\" >> .htaccess');
-	exec('echo Require valid-user >> .htaccess');
-}
-
-// depricated
-function old_login() {
-    
-	$conf = parse_ini_file("../config.ini");	// should really use common function
-	$password = trim($conf[password]);
-
-	if (empty($password))
-		die("The password must be set in the config file before this feature can be used.");
-
-	generate_htpasswd($password);
-	
-	if (!file_exists(".htaccess"))
-		generate_htaccess();
-	
-	header('Location: manage.php');
-}
 
 function logged_in() {
 	if ($_SESSION[authenticated] === true) {
@@ -56,7 +23,6 @@ session_start();
 
 $thisscript = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
-//print_r($_REQUEST);
 
 if ($thisscript == "index.php")  # then run main
 {
