@@ -328,21 +328,20 @@ function showgeneralsettings() {
 $quicknailversion="0.5.1";
 $basedir = "..";
 
-$galhomeasinclude=true; # needed for including the gallery home functions
+$galleryasinclude=true; # needed for including the gallery home functions
 
 include("index.php");	# for authentication
-include("../index.php");	# to get functions		needs to have a dynamic name
+include("../qnail.php");	# to get functions		needs to have a dynamic name
 
 session_start();
 
 
-load_config("$basedir/config.ini");
+load_config("$basedir/qconfig.ini");
 
 $conf_fromfile = $conf;
 
 $conf[general][picturesdir] = "$basedir/" . $conf[general][picturesdir];
 $conf[general][thumbsdir] = "$basedir/" . $conf[general][thumbsdir];
-$conf[general][quicknail_script] = "$basedir/" . $conf[general][quicknail_script];
 
 $script = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
@@ -357,7 +356,7 @@ if (!logged_in()) {
 }
 
 if ($mode == "logout") {
-	print "You are now logged out.<br><a href=index.php>Log in</a><br><a href=" . $conf[general][quicknail_script] . ">View Gallery</a>";
+	print "You are now logged out.<br><a href=index.php>Log in</a><br><a href=../qnail.php>View Gallery</a>";
 	$_SESSION[authenticated] = false;
 	unset($_SESSION[authenticated]);
 	exit;
@@ -467,7 +466,7 @@ width: 100%;
 
 
 <ul class=qmenu>
-<li><a href=<? echo $conf[general][quicknail_script] ?> >View gallery</a>
+<li><a href=../qnail.php >View gallery</a>
 <li><a href=http://quicknail.foodnotblogs.com>QuickNail Home Page</a>
 <li><a href=http://quicknail.foodnotblogs.com/updates.php?fromversion=<? echo $quicknailversion ?> >QuickNail Updates</a>
 <li><a href=<? echo $script ?>?mode=logout>Logout</a></center>
@@ -484,7 +483,6 @@ width: 100%;
 
 <?
 
-// print "<center><a href=$script?mode=showcaptions>captions</a> | <a href=$script?mode=checkthumbs>thumbnails</a> | <a href=" . $conf[general][quicknail_script] . ">gallery</a> | <a href=logout.php>logout</a></center><br>";
 
 if ($mode == "showcaptions") {
 	print "<h3>Captions</h3>";

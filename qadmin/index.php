@@ -23,10 +23,11 @@ session_start();
 
 $thisscript = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
+$galleryasinclude=true;
 
 if ($thisscript == "index.php")  # then run main
 {
-	$conf = parse_ini_file("../config.ini");	// should really use common function
+	$conf = parse_ini_file("../qconfig.ini");	// should really use common function
 	$password = trim($conf[password]);
 
 	if (empty($password))

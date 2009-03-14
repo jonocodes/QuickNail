@@ -605,39 +605,38 @@ TMPL;
 
 //$qnpage = "galleryhome";	# needed for including this page from admin area
 
-if (!$galhomeasinclude) {
+if (!$galleryasinclude) {
+
+	$common_folder= "qcommon";
+
+	check_dependencies();
+	load_config("qconfig.ini");	# populates $config
 
 
-$common_folder= "qcommon";
+	# check too see if there are not any images
+	$pictures = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby);
 
-check_dependencies();
-load_config("config.ini");	# populates $config
+	if (count($pictures) == 0 )
+		die("Error: No valid images in directory.");
+
+	foreach ($pictures as $picture)
+		$captions[$picture[file]] = $picture[caption];
 
 
-# check too see if there are not any images
-$pictures = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby);
+	$script = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
-if (count($pictures) == 0 )
-	die("Error: No valid images in directory.");
+	$mode = $_GET{mode};
+	$filename = $_GET{filename};
+	$max = $_GET{max};
+	$w = $_GET{w};
+	$h = $_GET{h};
 
-foreach ($pictures as $picture)
-	$captions[$picture[file]] = $picture[caption];
-	
-
-$script = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
-
-$mode = $_GET{mode};
-$filename = $_GET{filename};
-$max = $_GET{max};
-$w = $_GET{w};
-$h = $_GET{h};
-
-if ($mode == "image") printImage($filename);
-else if ($mode == "enlarge")	enlargeImage($filename);
-else if ($mode == "slideshow")
-	enlargeImage($filename, true);
-else
-	showGallery();
+	if ($mode == "image") printImage($filename);
+	else if ($mode == "enlarge")	enlargeImage($filename);
+	else if ($mode == "slideshow")
+		enlargeImage($filename, true);
+	else
+		showGallery();
 
 }
 
