@@ -6,7 +6,6 @@
 $quicknail_homepage = "http://quicknail.foodnotblogs.com";
 $quicknail_version="0.5.1-unstable";
 
-
 // INI file read/write functions
 
 function isInteger($input){
@@ -210,8 +209,8 @@ function printImage($filename) {
 
 
 # generate filenames, thumbnails and captions lists
-function generate_file_list($dir, $thumbsdir, $sortby) {
-	global $script, $conf;
+function generate_file_list($dir, $thumbsdir, $sortby, $fromadmin=false) {
+	global $imagescript, $conf;
 
 	function cmp_date($a, $b) {
 	//	return strcmp($a["sortfield"], $b["sortfield"]);
@@ -247,9 +246,12 @@ function generate_file_list($dir, $thumbsdir, $sortby) {
 			
 			if (file_exists($thumbname))
 				$picture[thumbnail] = $thumbname;
-			else
-				$picture[thumbnail] = $script . "?mode=image&filename=" . urlencode($filename) . "&max=" . $conf[gallery][thumbsize];
-				
+			else {
+				if ($fromadmin)
+					$filename = substr($filename, 3);
+
+				$picture[thumbnail] = $imagescript . "?mode=image&filename=" . urlencode($filename) . "&max=" . $conf[gallery][thumbsize];
+			}
 			$pictures[] = $picture;
    		}
 	}
@@ -262,7 +264,7 @@ function generate_file_list($dir, $thumbsdir, $sortby) {
 
 function enlargeImage($filename, $slideshow=false)
 {
-	global $script, $pictures, $captions, $template_text, $conf;
+	global $imagescript, $pictures, $captions, $template_text, $conf;
 	$size = $conf[image][enlargesize];
 	$title = $conf[general][title];
 	
@@ -272,19 +274,19 @@ function enlargeImage($filename, $slideshow=false)
 	$choppedname = ereg_replace("(.*\/)([^\/]*)","\\2", chopext($filename));
 	$totalfiles = count($pictures);
 	
-	$previous = $next = $script;
+	$previous = $next = $imagescript;
 	
 	$index = -1;
 	for ($i = 0; $i<=count($pictures); $i++)
 		if ($filename == $pictures[$i][file])	$index = $i;
 	
-	if ($index > 0) $previous = "$script?mode=$navmode&filename=". urlencode($pictures[$index-1][file]);
-	if ($index < $totalfiles && $pictures[$index+1][file] != "") $next = "$script?mode=$navmode&filename=". urlencode($pictures[$index+1][file]);
+	if ($index > 0) $previous = "$imagescript?mode=$navmode&filename=". urlencode($pictures[$index-1][file]);
+	if ($index < $totalfiles && $pictures[$index+1][file] != "") $next = "$imagescript?mode=$navmode&filename=". urlencode($pictures[$index+1][file]);
 	$index++;
 	
 	$caption = stripslashes($captions[$filename]);
 	
-	$img = "<img src=$script?mode=image&filename=". urlencode($filename) ."&max=$size>";
+	$img = "<img src=$imagescript?mode=image&filename=". urlencode($filename) ."&max=$size>";
 	if ($conf[image][clickfull])
 		$img = "<a href=\"". ($filename) ."\">$img</a>";
 		
@@ -312,12 +314,12 @@ a:hover {  color: #FF9933; text-decoration: none; }
 HEAD;
 
 	if ($title)
-		$t = "<a href=$script>$title</a> /";
+		$t = "<a href=$imagescript>$title</a> /";
 
 	$content =<<<CONTENT
 <table border=0 align=center><tr>
 <td align=left><b>$t $choppedname</b></td>
-<td align=right><a href=$previous>&#8592; previous</a> | <a href=$script>$index of $totalfiles</a> | <a href=$next>next &#8594;</a></td>
+<td align=right><a href=$previous>&#8592; previous</a> | <a href=$imagescript>$index of $totalfiles</a> | <a href=$next>next &#8594;</a></td>
 </tr><tr><td align=center colspan=2><br>
 	<table cellpadding=0 cellspacing=7 class=picborder><tr><td>$img<br> $caption</td></tr></table>
 </div></td></tr></table>
@@ -330,7 +332,7 @@ CONTENT;
 
 function showGallery()
 {
-	global $script, $pictures, $captions, $template_text, $quicknail_homepage, $common_folder, $conf;
+	global $imagescript, $pictures, $captions, $template_text, $quicknail_homepage, $common_folder, $conf;
 
 	$page = $_GET{page};
 
@@ -456,9 +458,9 @@ CREDIT;
 			$caption = "<div class=highslide-caption>". stripslashes($captions[$pictures[$loop][file]]) ."</div>";
 		
 		if ($conf[image][lightbox])
-			$imghref="<a class=linkopacity href=$script?mode=image&filename=" . urlencode($pictures[$loop][file]) . "&max=" . $conf[image][enlargesize] ." class=highslide onclick=\"return hs.expand(this)\">";
+			$imghref="<a class=linkopacity href=$imagescript?mode=image&filename=" . urlencode($pictures[$loop][file]) . "&max=" . $conf[image][enlargesize] ." class=highslide onclick=\"return hs.expand(this)\">";
 		else
-			$imghref = "<a class=linkopacity href=$script?mode=enlarge&filename=" . urlencode($pictures[$loop][file]) . ">";
+			$imghref = "<a class=linkopacity href=$imagescript?mode=enlarge&filename=" . urlencode($pictures[$loop][file]) . ">";
 		
 		$content .= "\n\t<td align=center>\n\t\t<table cellpadding=0 cellspacing=5 class=picborder><tr><td>$imghref";
 		$content .= "<img src=\"" . $pictures[$loop][thumbnail] . "\" title=\"Click to enlarge\" /></a>$caption</td></tr></table>";
@@ -480,23 +482,23 @@ CREDIT;
 		
 		if ($page > 1)
 		{
-			$content .= "<a href=$script?page=1>&lt;&lt;</a> <a href=$script?page=". ($page - 1) .">&lt;Prev</a> ";
+			$content .= "<a href=$imagescript?page=1>&lt;&lt;</a> <a href=$imagescript?page=". ($page - 1) .">&lt;Prev</a> ";
 		}
 		for ($i=1; $i<=$numpages; $i++)
 		{
 			if ($page == $i)	$content .= "[$i] ";
-			else	$content .= "<a href=$script?page=$i>$i</a> ";
+			else	$content .= "<a href=$imagescript?page=$i>$i</a> ";
 		}
 		if ($page < $numpages)
 		{
-			$content .= "<a href=$script?page=". ($page + 1) .">Next&gt;</a> ";
-			$content .= "<a href=$script?page=$numpages>&gt;&gt;</a> ";
+			$content .= "<a href=$imagescript?page=". ($page + 1) .">Next&gt;</a> ";
+			$content .= "<a href=$imagescript?page=$numpages>&gt;&gt;</a> ";
 		}
 	}
 	$content .= "</center>";
 	
 	if (!$conf[image][lightbox])
-		$content .= "<br><center><a href=\"$script?mode=slideshow&filename=" . urlencode($pictures[0][file]) . "\">[slideshow]</a></center>";
+		$content .= "<br><center><a href=\"$imagescript?mode=slideshow&filename=" . urlencode($pictures[0][file]) . "\">[slideshow]</a></center>";
 	
 	if ($conf[gallery][show_credit])	$content .= $credit;
 
@@ -598,6 +600,7 @@ TMPL;
 
 if (!$galleryasinclude) {
 
+	$imagescript="qnail.php";
 	$common_folder= "qcommon";
 
 	check_dependencies();
@@ -613,7 +616,7 @@ if (!$galleryasinclude) {
 		$captions[$picture[file]] = $picture[caption];
 
 
-	$script = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
+	$imagescript = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
 	$mode = $_GET{mode};
 	$filename = $_GET{filename};

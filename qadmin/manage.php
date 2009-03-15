@@ -99,7 +99,7 @@ function update_iptc($image_name, $fields) {
 		$img = imagecreatefromjpeg($image_name);
 		imagejpeg($img,$image_name,80);
 		imagedestroy($img);
-			
+		
 		newIPTC($image_name, $fields);
 		$existing_fields_after = get_iptc($image_name);
 	}
@@ -113,10 +113,11 @@ function update_iptc($image_name, $fields) {
 
 function show_all_captions($pictures) {
 	global $script;
-	
+
+	$picnum=0;
 	print "<form method=post action=$script><input type=hidden name=mode value=updatecaptions><table border=0 cellpadding=10>";
 	
-	foreach ($pictures as $picture)
+	foreach ($pictures as $pid => $picture)
 	{
 		$thisfile = $picture[file];
 		$thiscaption = $picture[caption];
@@ -126,13 +127,23 @@ function show_all_captions($pictures) {
 		
 		$fieldname = preg_replace("/ /","____", preg_replace("/\./","---",$thisfile));
 
-		print "<tr><td align=center><img src=\"$thisthumb\"></td>";
-		print "<td>$thisfile_showname<br />";
-		if (!is_readable($thisfile))
-			print "<font color=red>Warning: File is not readable.<br>Change permissions in order to view picture.</font><br />";
-		if (!is_writable($thisfile))
-			print "<font color=red>Warning: File is not writable.<br>Change permissions in order to update caption.</font><br />";
-		print "<br /><input type=text size=50 maxlength=125 name=\"$fieldname\" value=\"" . stripslashes($thiscaption) . "\"></td></tr>\n";
+		if (file_exists($thisfile)) {
+
+			$operations = "<a href=updateimage.php?mode=rotateleft&picnum=$pid>rotate left</a> | <a href=updateimage.php?mode=rotateright&picnum=$pid>rotate right</a> " .
+					"| <a href=# onclick=\"confirmation('delete image', 'updateimage.php?mode=delete&picnum=$pid')\">delete image</a>";
+
+			print "<tr><td align=center><img src=\"$thisthumb\"></td>";
+			print "<td>$thisfile_showname<br /><br />$operations<br />";
+
+			if (!is_readable($thisfile))
+				print "<font color=red>Warning: File is not readable.<br>Change permissions in order to view picture.</font><br />";
+			if (!is_writable($thisfile))
+				print "<font color=red>Warning: File is not writable.<br>Change permissions in order to update caption.</font><br />";
+
+			print "<br />Caption: <input type=text size=40 maxlength=125 name=\"$fieldname\" value=\"" . stripslashes($thiscaption) . "\">";
+			print "</td></tr>\n";
+		}
+		
 	}
 	print "<tr><td></td><td><input type=Submit value=Update></td></tr>";
 	print "</table></form>";
@@ -325,11 +336,12 @@ function showgeneralsettings() {
 # main()
 
 $basedir = "..";
+$imagescript=$basedir . "/qnail.php";
 
 $galleryasinclude=true; # needed for including the gallery home functions
 
 include("index.php");	# for authentication
-include("../qnail.php");	# to get functions		needs to have a dynamic name
+include($imagescript);	# to get functions
 
 session_start();
 
@@ -345,8 +357,10 @@ $script = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
 $mode = $_REQUEST{mode};
 
-$pictures = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby);
+//if (empty($_SESSION[pictures]))
+	$_SESSION[pictures] = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby, true);
 
+$pictures = $_SESSION[pictures];
 
 if (!logged_in()) {
 	header('Location: index.php');
@@ -436,6 +450,19 @@ width: 100%;
 }
 
 </style>
+
+<script type="text/javascript">
+<!--
+function confirmation(op, loc) {
+	var answer = confirm("Are you sure you want to " + op + "?");
+	if (answer){
+		window.location = loc;
+	}
+}
+//-->
+</script>
+
+
 </head>
 
 <body>
@@ -449,25 +476,25 @@ width: 100%;
 
 <br>
 <ul class=qmenu>
-
-<li><a href=<? echo $script ?>>Summary</a>
-<li><a href=<? echo $script ?>?mode=showgeneralsettings>Settings</a>
-<li><a href=<? echo $script ?>?mode=showcaptions>Captions</a>
-<li><a href=<? echo $script ?>?mode=checkthumbs>Thumbnails</a>
-	<ul>
-		<li><a href=<? echo $script ?>?mode=checkthumbs>Check</a>
-		<li><a href=<? echo $script ?>?mode=generatemissingthumbs>Generate Missing</a>
-		<li><a href=<? echo $script ?>?mode=regeneratethumbs>Re-generate All</a>
-		<li><a href=<? echo $script ?>?mode=deletethumbs>Delete All</a>
-	</ul>
+	<li><a href=<? echo $script ?>>Summary</a></li>
+	<li><a href=<? echo $script ?>?mode=showgeneralsettings>Show settings</a></li>
+	<li><a href=<? echo $script ?>?mode=showcaptions>Manage Images</a></li>
+	<li><a href=<? echo $script ?>?mode=checkthumbs>Thumbnails</a>
+		<ul>
+			<li><a href=<? echo $script ?>?mode=checkthumbs>Check</a></li>
+			<li><a href=<? echo $script ?>?mode=generatemissingthumbs>Generate Missing</a></li>
+			<li><a href=# onclick="confirmation('regenerate all thumbnails', '<? echo $script ?>?mode=regeneratethumbs')">Re-generate All</a></li>
+			<li><a href=# onclick="confirmation('delete all thumbnails', '<? echo $script ?>?mode=deletethumbs')">Delete All</a></li>
+		</ul>
+	</li>
 </ul>
 
 
 <ul class=qmenu>
-<li><a href=../qnail.php >View gallery</a>
-<li><a href=<? echo $quicknail_homepage ?> >QuickNail Home Page</a>
-<li><a href=<? echo $quicknail_homepage ?>/updates.php?fromversion=<? echo $quicknail_version ?> >QuickNail Updates</a>
-<li><a href=<? echo $script ?>?mode=logout>Logout</a></center>
+	<li><a href=../qnail.php >View gallery</a></li>
+	<li><a href=<? echo $quicknail_homepage ?> >QuickNail Home Page</a></li>
+	<li><a href=<? echo $quicknail_homepage ?>/updates.php?fromversion=<? echo $quicknail_version ?> >QuickNail Updates</a></li>
+	<li><a href=<? echo $script ?>?mode=logout>Logout</a></center></li>
 </ul>
 
 </div>
@@ -488,7 +515,7 @@ if ($mode == "showcaptions") {
 }
 else if ($mode == "updatecaptions") {
 
-	print "<h3>Captions</h3>";
+	print "<h3>Manage Images</h3>";
 
 	if (count($_POST) != 0) {
 
