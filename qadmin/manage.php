@@ -1,10 +1,9 @@
 <?
-#
-# QuickNail by Jono - jonojuggles@gmail.com
-# http://quicknail.foodnotblogs.com
-#
-#
-
+/**
+ *
+ * QuickNail by Jono - jonojuggles@gmail.com
+ *
+ */
 
 function newIPTC($image_name, $fields)
 {
@@ -325,7 +324,6 @@ function showgeneralsettings() {
 
 # main()
 
-$quicknailversion="0.5.1";
 $basedir = "..";
 
 $galleryasinclude=true; # needed for including the gallery home functions
@@ -467,8 +465,8 @@ width: 100%;
 
 <ul class=qmenu>
 <li><a href=../qnail.php >View gallery</a>
-<li><a href=http://quicknail.foodnotblogs.com>QuickNail Home Page</a>
-<li><a href=http://quicknail.foodnotblogs.com/updates.php?fromversion=<? echo $quicknailversion ?> >QuickNail Updates</a>
+<li><a href=<? echo $quicknail_homepage ?> >QuickNail Home Page</a>
+<li><a href=<? echo $quicknail_homepage ?>/updates.php?fromversion=<? echo $quicknail_version ?> >QuickNail Updates</a>
 <li><a href=<? echo $script ?>?mode=logout>Logout</a></center>
 </ul>
 

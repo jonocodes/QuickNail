@@ -8,11 +8,11 @@ No need to create thumbnails, or resize your images, or write any HTML. All you 
 Quick installation
 
     * Download and unzip all archive contents into a folder
-    * (for a minimal featureless installation, you only need to extract index.php)
+    * (for a minimal featureless installation, you only need to extract qnail.php)
     * Put jpg photos into that folder
-    * Edit config.ini to customize (optional)
+    * Edit qconfig.ini to customize (optional)
     * Upload the whole directory to your web server
-    * Visit the directory in a browser 
+    * Visit qnail.php in a browser 
 
 For a more detailes and configuration options please visit our homepage:
 http://quicknail.foodnotblogs.com/

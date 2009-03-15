@@ -1,10 +1,10 @@
 <?
 /**
  * QuickNail by Jono - jonojuggles@gmail.com
- * http://quicknail.foodnotblogs.com
  */
 
 $quicknail_homepage = "http://quicknail.foodnotblogs.com";
+$quicknail_version="0.5.1-unstable";
 
 
 // INI file read/write functions
@@ -390,12 +390,6 @@ function showGallery()
 	hs.fadeInOut = true;
 	hs.dimmingOpacity = $dim;
 	
-	// define the restraining box
-//	hs.useBox = true;
-//	hs.width = 640;
-//	hs.height = 480;
-
-
 	// Add the controlbar
 	if (hs.addSlideshow) hs.addSlideshow({
 		interval: $ss,
@@ -536,14 +530,14 @@ function check_dependencies() {
 		die("Error: looks like GD is not installed on this server");
 
 	# check for local libraries
-		if (!is_dir($common_folder))
-			die("Error: QuickNail needs the $common_folder folder in order to work.");
+	if (!is_dir($common_folder))
+		die("Error: QuickNail needs the $common_folder folder in order to work.");
 		
-		$needed_files = array("$common_folder/highslide-with-gallery.js", "$common_folder/highslide.css");	# should check for all necessarry files
+	$needed_files = array("$common_folder/highslide-with-gallery.js", "$common_folder/highslide.css");	# should check for all necessarry files
 	
-		foreach ($needed_files as $file)
-			if (!file_exists($file))
-				die("Error: QuickNail cannot be used without '$file'");
+	foreach ($needed_files as $file)
+		if (!file_exists($file))
+			die("Error: QuickNail cannot be used without '$file'");
 }
 
 /**
@@ -580,7 +574,6 @@ TMPL;
 
 	# check user defined vars
 
-//	if (empty($conf[general][title])) $conf[general][title] = "My Photo Gallery";
 	if (!is_bool($conf[image][lightbox])) $conf[image][lightbox] = false;
 	if (!is_integer($conf[gallery][picsperline])) $conf[gallery][picsperline] = 3;
 	if (!is_integer($conf[gallery][picsperpage])) $conf[gallery][picsperpage] = 12;
@@ -603,15 +596,12 @@ TMPL;
 
 # MAIN starts here
 
-//$qnpage = "galleryhome";	# needed for including this page from admin area
-
 if (!$galleryasinclude) {
 
 	$common_folder= "qcommon";
 
 	check_dependencies();
 	load_config("qconfig.ini");	# populates $config
-
 
 	# check too see if there are not any images
 	$pictures = generate_file_list($conf[general][picturesdir], $conf[general][thumbsdir], $sortby);

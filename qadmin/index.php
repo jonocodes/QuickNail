@@ -1,10 +1,14 @@
 <?
-
+/**
+ *
+ * QuickNail by Jono - jonojuggles@gmail.com
+ *
+ */
 
 function logged_in() {
-	if ($_SESSION[authenticated] === true) {
+	if ($_SESSION[qn3gath] === true)
 		return true;
-	}
+	
 	return false;
 }
 
@@ -27,7 +31,7 @@ $galleryasinclude=true;
 
 if ($thisscript == "index.php")  # then run main
 {
-	$conf = parse_ini_file("../qconfig.ini");	// should really use common function
+	parse_ini_file("../qconfig.ini", $conf);
 	$password = trim($conf[password]);
 
 	if (empty($password))
@@ -35,7 +39,7 @@ if ($thisscript == "index.php")  # then run main
 
 	if ($_REQUEST[password]) {
 		if ($password == $_REQUEST[password])
-			$_SESSION[authenticated] = true;
+			$_SESSION[qn3gath] = true;
 		else
 			print "incorrect password<br>";
 	}
