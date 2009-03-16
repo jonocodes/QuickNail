@@ -130,10 +130,13 @@ function show_all_captions($pictures) {
 
 		if (file_exists($thisfile)) {
 
-			$operations = "<a href=updateimage.php?mode=rotateleft&picnum=$pid>rotate left</a> | <a href=updateimage.php?mode=rotateright&picnum=$pid>rotate right</a> " .
-					"| <a href=# onclick=\"confirmation('delete image', 'updateimage.php?mode=delete&picnum=$pid')\">delete image</a>";
+			$operations = "<div class=operations><a href=# onclick=\"rotateimage($pid, 'left')\">rotate left</a> | <a href=# onclick=\"rotateimage($pid, 'right')\">rotate right</a> " .
+					"| <a href=# onclick=\"deleteimage($pid)\">delete image</a></div>";
 
-			print "<tr><td align=center><img src=\"$thisthumb\"></td>";
+//<a href=updateimage.php?mode=rotateleft&picnum=$pid>rotate left</a>
+//<a href=# onclick=\"confirmation('delete image', 'updateimage.php?mode=delete&picnum=$pid')\">delete
+
+			print "<tr id=$pid><td align=center><img id=$pid src=\"$thisthumb\"></td>";
 			print "<td>$thisfile_showname<br /><br />$operations<br />";
 
 			if (!is_readable($thisfile))

@@ -84,7 +84,6 @@ ul.qmenu{
 	margin-left: 0;
 	padding-left: 1em;
 	text-indent: -1em;
-
 }
 
 ul.qmenu li:before {
@@ -103,17 +102,9 @@ width: 100%;
 
 </style>
 
-<script type="text/javascript">
-<!--
-function confirmation(op, loc) {
-	var answer = confirm("Are you sure you want to " + op + "?");
-	if (answer){
-		window.location = loc;
-	}
-}
-//-->
-</script>
 
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="acommon.js"></script>
 
 </head>
 

@@ -127,7 +127,7 @@ function rotatepicture($pictid, $pictures, $direction) {
     $width = imagesx($source);
     $height = imagesy($source);	
 	$target = rotateImage($source, $direction);
-	imagejpeg($target, $img);
+	imagejpeg($target, $img, 95);
 
 	print "done.";
 
@@ -139,7 +139,7 @@ function rotatepicture($pictid, $pictures, $direction) {
 
 			$source = imagecreatefromjpeg($thumb);
 			$target = rotateImage($source, $direction);
-			imagejpeg($target, $thumb);
+			imagejpeg($target, $thumb, 95);
 
 			print "done.";
 		}
@@ -198,6 +198,6 @@ switch ($mode) {
 		break;
 }
 
-print "<br><a href=$_SERVER[HTTP_REFERER]>Back</a>";
+//print "<br><a href=$_SERVER[HTTP_REFERER]>Back</a>";
 
 ?>
