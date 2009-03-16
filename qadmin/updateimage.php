@@ -5,6 +5,8 @@
  *
  */
 
+include("acommon.php");
+
 function rotate_right90($im)
 {
  $wid = imagesx($im);
@@ -168,21 +170,9 @@ function deletepicture($pictid, $pictures, $deletethumb=true) {	// would be bett
 
 }
 
-$basedir = "..";
-
-$imagescript=$basedir . "/qnail.php";
-
-$galleryasinclude=true; # needed for including the gallery home functions
-
-include("index.php");	# for authentication
-include($imagescript);	# to get functions
 
 session_start();
 
-load_config("$basedir/qconfig.ini");
-
-$conf[general][picturesdir] = "$basedir/" . $conf[general][picturesdir];
-$conf[general][thumbsdir] = "$basedir/" . $conf[general][thumbsdir];
 
 $mode = $_REQUEST{mode};
 
