@@ -101,12 +101,26 @@ function write_ini_file($path, $assoc_arr) {
 					$content .= $elem2."\r\n";
 				else if (beginsWith($key2,'Newline_') == 1 && ($elem2 == ''))
 					$content .= $elem2."\r\n";
-				else
-					$content .= $key2." = ".$elem2."\r\n";
+				else {
+
+					if (is_bool($elem2)&&$elem2===true)
+						$content .= $key2." = true\r\n";
+					else if (is_bool($elem2)&&$elem2===false)
+						$content .= $key2." = false\r\n";
+					else
+						$content .= $key2." = ".$elem2."\r\n";
+				}
+
+//					$content .= $key2." = ".$elem2."\r\n";
 			}
 		}
-		else 
-			$content .= $key." = ".$elem."\r\n";
+		else
+			if (is_bool($elem)&&$elem===true)
+				$content .= $key." = true\r\n";
+			else if (is_bool($elem)&&$elem===false)
+				$content .= $key." = false\r\n";
+			else
+				$content .= $key." = ".$elem."\r\n";
 	}
 
 	if (!$handle = fopen($path, 'w'))
@@ -606,8 +620,8 @@ TMPL;
 	if (!is_integer($conf[image][enlargesize])) $conf[image][enlargesize] = 600;
 	if (!is_bool($conf[image][clickfull])) $conf[image][clickfull] = true;
 
-	if (!is_bool($conf[image][show_credit])) $conf[image][show_credit] = true;
-	if (!is_integer($conf[image][thumbsize])) $conf[image][thumbsize] = 180;
+	if (!is_bool($conf[gallery][show_credit])) $conf[gallery][show_credit] = true;
+	if (!is_integer($conf[gallery][thumbsize])) $conf[gallery][thumbsize] = 180;
 	if (!is_bool($conf[gallery][show_image_names])) $conf[gallery][show_image_names] = false;
 	if (!is_bool($conf[image][show_captions])) $conf[image][show_captions] = true;
 
@@ -619,8 +633,23 @@ TMPL;
 		$conf[image][lightbox_dim_background] = 0.75;
 }
 
+function qnprinthead() {
+	global $qnout, $headprinted;
+	$headprinted = true;
+	print $qnout[head];
+}
+
+function qnprintbody() {
+	global $qnout, $headprinted;
+	if (!$headprinted)
+		die("QuickNail Error: head not printed");
+
+	print $qnout[body];
+}
+
 # MAIN starts here
 
+$headprinted = false;
 $altgalleryscript = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);	// since there can be an index or custom
 
 if (!$galleryasinclude) {

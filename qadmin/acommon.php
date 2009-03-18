@@ -310,7 +310,6 @@ function showsummary($pictures, $picturesdir, $thumbsdir) {
 function showgeneralsettings() {
 	global $conf_fromfile;
 
-
 	print "<table align=center border=0 cellpadding=5>";
 
 	foreach ($conf_fromfile as $sectitle => $thissection)
@@ -332,9 +331,29 @@ function showgeneralsettings() {
 	}
 
 	print "</table>";
-
-
 }
+
+function settings() {
+	global $conf_fromfile;
+
+	print "<br><form id=editsettings><table align=center border=0 cellpadding=5>";
+	
+	print "<tr><td align=right width=150><b>Title</b></td><td><input type=text value=\"" . $conf_fromfile[general][title] . "\" name=general__title></td><td width=200><div id=titlemessage>.</div></td></tr></tr>";
+
+	print "<tr><td align=right><b>Subtitle</b></td><td><input type=text value=\"" . $conf_fromfile[general][subtitle] . "\" name=general__subtitle></td><td><div id=subtitlemessage>.</div></td></tr></tr>";
+
+	print "<tr><td align=right><b>Pictures Directory</b></td><td><input type=text value=\"" . $conf_fromfile[general][picturesdir] . "\" name=general__picturesdir></td><td><div id=picturesdirmessage>.</div></td></tr></tr>";
+
+	print "<tr><td align=right><b>Thumbails Directory</b></td><td><input type=text value=\"" . $conf_fromfile[general][thumbsdir] . "\" name=general__thumbsdir></td><td><div id=thumbsdirmessage>.</div></td></tr></tr>";
+
+	print "<tr><td align=right><b>Template File</b></td><td><input type=text value=\"" . $conf_fromfile[general][template] . "\" name=general__template></td><td><div id=templatemessage>.</div></td></tr></tr>";
+
+	print "</table></form>";
+	
+//	print "<div id=message>messages</div>";
+}
+
+
 
 # main
 # set various variables

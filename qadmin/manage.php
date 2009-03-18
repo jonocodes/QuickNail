@@ -120,7 +120,7 @@ width: 100%;
 <br>
 <ul class=qmenu>
 	<li><a href=<? echo $script ?>>Summary</a></li>
-	<li><a href=<? echo $script ?>?mode=showgeneralsettings>Show settings</a></li>
+	<li><a href=<? echo $script ?>?mode=settings>Settings</a></li>
 	<li><a href=<? echo $script ?>?mode=showcaptions>Manage Images</a></li>
 	<li><a href=<? echo $script ?>?mode=checkthumbs>Thumbnails</a>
 		<ul>
@@ -191,8 +191,10 @@ else if ($mode == "deletethumbs"){
 	print "<h3>Thumbnails</h3>";
 	deletethumbs($pictures, $conf[general][picturesdir], $conf[general][thumbsdir]);
 } 
-else if ($mode == "showgeneralsettings") {
-	showgeneralsettings();
+else if ($mode == "settings") {
+	print "<h3>Settings</h3>";
+	//showgeneralsettings();
+	settings();
 } else {
 	showsummary($pictures, $conf[general][picturesdir], $conf[general][thumbsdir]);
 }

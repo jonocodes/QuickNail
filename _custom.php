@@ -3,14 +3,14 @@
 <html>
 <head>
 
-<? print $qnout[head]; ?>
+<? qnprinthead(); ?>
 
 </head>
 <body bgcolor=lightgreen>
 
 begin outer page
 
-<? echo $qnout[body]; ?>
+<? qnprintbody(); ?>
 
 end outer page
 

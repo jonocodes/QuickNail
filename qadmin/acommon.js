@@ -13,8 +13,6 @@ function confirmation(op, loc) {
 
 function deleteimage(pid) {
 
-	$(function(){
-
 		var answer = confirm("Are you sure you want to delete the image?");
 
 		if (answer) {
@@ -26,14 +24,10 @@ function deleteimage(pid) {
 					$("tr#" + pid).fadeOut(2000);
 			});
 		}
-	});
 }
 
 
 function rotateimage(pid, direction) {
-
-
-	$(function(){
 
 		if (direction == "left")
 			rmode = "rotateleft";
@@ -54,6 +48,26 @@ function rotateimage(pid, direction) {
 
 		});
 	
-	});
 }
+
+
+
+$(document).ready(function(){
+
+	$("input").blur(function () {
+
+		var name = $(this).attr('name').split("__");
+		var section = name[0];
+		var field = name[1];
+		var value = $(this).attr('value');
+
+		$.get("updatesettings.php",{section: section, field: field, value: value}, function(j){
+
+			$("#" + field + "message").html(j).show().fadeOut(2000);
+			//if (j!="update")						// undo change if invalid
+			//	$(this).attr('value', origval);
+		})
+
+    });
+});
 
