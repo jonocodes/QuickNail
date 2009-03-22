@@ -5,7 +5,7 @@
  *
  */
 
-include("acommon.php");
+include_once("acommon.php");
 
 session_start();
 
@@ -21,8 +21,8 @@ $pictures = $_SESSION[pictures];
 
 if ($mode == "logout") {
 	print "You are now logged out.<br><a href=index.php>Log in</a><br><a href=../qnail.php>View Gallery</a>";
-	$_SESSION[authenticated] = false;
-	unset($_SESSION[authenticated]);
+	$_SESSION[qn3gath] = false;
+	unset($_SESSION[qn3gath]);
 	exit;
 }
 

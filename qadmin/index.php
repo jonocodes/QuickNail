@@ -29,10 +29,13 @@ $thisscript = ereg_replace("(.*\/)([^\/]*)","\\2", $_SERVER["SCRIPT_FILENAME"]);
 
 $galleryasinclude=true;
 
+include_once("../qnail.php");
+
 if ($thisscript == "index.php")  # then run main
-{
-	parse_ini_file("../qconfig.ini", $conf);
-	$password = trim($conf[password]);
+{	
+	read_ini_file("../qconfig.ini", $conf);
+
+	$password = trim($conf[general][password]);
 
 	if (empty($password))
 		die("The password must be set in the config file before this feature can be used.");

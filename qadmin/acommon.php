@@ -364,8 +364,8 @@ $imagescript=$basedir . "/qnail.php";
 
 $galleryasinclude=true; # needed for including the gallery home functions
 
-include("index.php");	# for authentication
-include($imagescript);	# to get functions
+include_once("index.php");	# for authentication
+include_once($imagescript);	# to get functions
 
 
 load_config("$basedir/qconfig.ini");
