@@ -1,5 +1,12 @@
-<Files ~ "^(\.ht)|(ini)">
+<Files ~ "^\.ht">
  Order allow,deny
  Deny from all
  Satisfy All
 </Files>
+
+<Files ~ ".*\.ini$">
+ Order allow,deny
+ Deny from all
+ Satisfy All
+</Files>
+
