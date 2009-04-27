@@ -50,8 +50,43 @@ function rotateimage(pid, direction) {
 	
 }
 
+function handleExpiredSession() {
+	$.get("session.php", {}, function(j){
+		if (j == "expired")
+			window.location = ".";
+	});
+}
+
+function updatefield(input){
+
+//alert($(input).attr('name'));
+
+	handleExpiredSession();
+
+	var name = $(input).attr('name').split("__");
+	var section = name[0];
+	var field = name[1];
+	var value = $(input).attr('value');
+
+	if ($(input).attr('type') == "checkbox") {
+		value = false;
+		value = $(input).attr('checked');
+	}
+	
+	$.get("updatesettings.php",{section: section, field: field, value: value}, function(j){
+		if (j!="updated")	{					// undo change if invalid
+			$("#" + field + "message").html(j).show().fadeOut(20000);
+		//	$(this).attr('value', origval);
+		} else
+			$("#" + field + "message").html(j).show().fadeOut(2000);
+			
+		//alert(value);
+	});
+				
+}
 
 
+/*
 $(document).ready(function(){
 
 	$("input").blur(function () {
@@ -70,4 +105,5 @@ $(document).ready(function(){
 
     });
 });
+*/
 

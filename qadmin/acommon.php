@@ -336,20 +336,68 @@ function showgeneralsettings() {
 function settings() {
 	global $conf_fromfile;
 
+    function show_field($readable, $section, $var, $checkbox=false){
+        global $conf_fromfile;
+        $val = $conf_fromfile[$section][$var];
+
+        if (!$checkbox)
+            print "<tr><td align=right width=150><b>$readable</b></td><td><input type=text value=\"" . $val . "\" name=" . $section . "__$var onchange=\"updatefield(this); \"></td><td width=200><div id=". $var . "message>&nbsp;</div></td></tr></tr>";
+        else {// assume checkbox
+            $c = ($val===true)? "checked=\"yes\"" : "";
+            print "<tr><td align=right width=150><b>$readable</b></td><td><input type=checkbox $c name=". $section ."__$var onclick=\"updatefield(this);\"></td><td width=200><div id=". $var ."message>&nbsp;</div></td></tr></tr>";
+        }
+    }
+
 	print "<br><form id=editsettings><table align=center border=0 cellpadding=5>";
+
+    print "<tr><td></td><td>General</td></tr>";
+    show_field("Title", "general", "title");
+    show_field("Subtitle", "general", "subtitle");
+    show_field("Pictures Directory", "general", "picturesdir");
+    show_field("Thumbails Directory", "general", "thumbsdir");
+    show_field("Template File", "general", "template");
+
+    print "<tr><td></td><td>Gallery</td></tr>";
+
+    show_field("Thumbnail size", "gallery", "thumbsize");
+    show_field("Pics per line", "gallery", "picsperline");
+    show_field("Pics per page", "gallery", "picsperpage");
+    show_field("Slideshow speed", "gallery", "slidespeed");
+    show_field("Show image names", "gallery", "show_image_names", true);
+    show_field("Show image credit", "gallery", "show_credit", true);
+
+    print "<tr><td></td><td>Images</td></tr>";
+
+    show_field("Enlarged size", "image", "enlargesize");
+    show_field("Show captions", "image", "show_captions", true);
+    show_field("Click to full", "image", "clickfull", true);
+    show_field("Prevent overscaling", "image", "prevent_enlarged_overscaling", true);
+    show_field("Enable lightbox", "image", "lightbox", true);
+    show_field("Lightbox background dimming", "image", "lightbox_dim_background");
+
+
+	//1=borderless dark, 2=dark, 3=white, 4=glowing white, 5=drop shadow white
 	
-	print "<tr><td align=right width=150><b>Title</b></td><td><input type=text value=\"" . $conf_fromfile[general][title] . "\" name=general__title></td><td width=200><div id=titlemessage>.</div></td></tr></tr>";
-
-	print "<tr><td align=right><b>Subtitle</b></td><td><input type=text value=\"" . $conf_fromfile[general][subtitle] . "\" name=general__subtitle></td><td><div id=subtitlemessage>.</div></td></tr></tr>";
-
-	print "<tr><td align=right><b>Pictures Directory</b></td><td><input type=text value=\"" . $conf_fromfile[general][picturesdir] . "\" name=general__picturesdir></td><td><div id=picturesdirmessage>.</div></td></tr></tr>";
-
-	print "<tr><td align=right><b>Thumbails Directory</b></td><td><input type=text value=\"" . $conf_fromfile[general][thumbsdir] . "\" name=general__thumbsdir></td><td><div id=thumbsdirmessage>.</div></td></tr></tr>";
-
-	print "<tr><td align=right><b>Template File</b></td><td><input type=text value=\"" . $conf_fromfile[general][template] . "\" name=general__template></td><td><div id=templatemessage>.</div></td></tr></tr>";
-
+	$selectstyle = array(
+		1=>"borderless dark",
+		2=>"dark",
+		3=>"white",
+		4=>"glowing white",
+		5=>"drop shadow white",
+		);
+		
+	$prevval = $conf_fromfile[image][lightbox_slidestyle];
+	
+	foreach ($selectstyle as $key => $value)
+		if ($key == $prevval)
+			$select .= "<option value=$key SELECTED>$value</option>\n";
+		else
+			$select .= "<option value=$key>$value</option>\n";
+			
+	print "<tr><td align=right width=150><b>Lightbox Slide Style</b></td><td><select name=image__lightbox_slidestyle onchange=\"updatefield(this);\">$select</select></td><td width=200><div id=lightbox_slidestylemessage>&nbsp;</div></td></tr></tr>";
+	
 	print "</table></form>";
-	
+		
 //	print "<div id=message>messages</div>";
 }
 
