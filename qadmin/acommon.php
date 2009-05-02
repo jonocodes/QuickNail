@@ -264,6 +264,17 @@ function generatethumbs($pictures, $picturesdir, $thumbsdir, $fullrefresh=false)
 }
 
 
+function getthumbsize($pictures) {
+	global $conf;
+
+	foreach ($pictures as $pid => $picture)
+		if (!preg_match("/php/", $picture[thumbnail])) {
+			list($width, $height, $type, $attr) = getimagesize($picture[thumbnail]);
+			return max($width, $height);
+		}
+
+    return -1;
+}
 
 
 function deletethumbs($pictures, $picturesdir, $thumbsdir) {
@@ -341,10 +352,10 @@ function settings() {
         $val = $conf_fromfile[$section][$var];
 
         if (!$checkbox)
-            print "<tr><td align=right width=150><b>$readable</b></td><td><input type=text value=\"" . $val . "\" name=" . $section . "__$var onchange=\"updatefield(this); \"></td><td width=200><div id=". $var . "message>&nbsp;</div></td></tr></tr>";
+            print "<tr><td align=right width=150><b>$readable</b></td><td><input type=text value=\"" . $val . "\" name=" . $section . "__$var onchange=\"updatefield(this, '$val'); \"></td><td width=200><div id=". $var . "message>&nbsp;</div></td></tr></tr>";
         else {// assume checkbox
             $c = ($val===true)? "checked=\"yes\"" : "";
-            print "<tr><td align=right width=150><b>$readable</b></td><td><input type=checkbox $c name=". $section ."__$var onclick=\"updatefield(this);\"></td><td width=200><div id=". $var ."message>&nbsp;</div></td></tr></tr>";
+            print "<tr><td align=right width=150><b>$readable</b></td><td><input type=checkbox $c name=". $section ."__$var onclick=\"updatefield(this, '$val');\"></td><td width=200><div id=". $var ."message>&nbsp;</div></td></tr></tr>";
         }
     }
 

@@ -57,9 +57,7 @@ function handleExpiredSession() {
 	});
 }
 
-function updatefield(input){
-
-//alert($(input).attr('name'));
+function updatefield(input, origval){
 
 	handleExpiredSession();
 
@@ -74,36 +72,14 @@ function updatefield(input){
 	}
 	
 	$.get("updatesettings.php",{section: section, field: field, value: value}, function(j){
-		if (j!="updated")	{					// undo change if invalid
+		if (j!="updated")	{
 			$("#" + field + "message").html(j).show().fadeOut(20000);
-		//	$(this).attr('value', origval);
+			if ($(input).attr('type') != "checkbox")
+				$(input).attr('value', origval).show();
 		} else
 			$("#" + field + "message").html(j).show().fadeOut(2000);
-			
-		//alert(value);
 	});
 				
 }
 
-
-/*
-$(document).ready(function(){
-
-	$("input").blur(function () {
-
-		var name = $(this).attr('name').split("__");
-		var section = name[0];
-		var field = name[1];
-		var value = $(this).attr('value');
-
-		$.get("updatesettings.php",{section: section, field: field, value: value}, function(j){
-
-			$("#" + field + "message").html(j).show().fadeOut(2000);
-			//if (j!="update")						// undo change if invalid
-			//	$(this).attr('value', origval);
-		})
-
-    });
-});
-*/
 
