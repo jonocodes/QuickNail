@@ -72,7 +72,7 @@ function updatefield(input, origval){
 	}
 	
 	$.get("updatesettings.php",{section: section, field: field, value: value}, function(j){
-		if (j!="updated")	{
+		if (! j.match(/^updated/) )	{
 			$("#" + field + "message").html(j).show().fadeOut(20000);
 			if ($(input).attr('type') != "checkbox")
 				$(input).attr('value', origval).show();
