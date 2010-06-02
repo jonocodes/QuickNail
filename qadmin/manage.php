@@ -122,6 +122,7 @@ width: 100%;
 	<li><a href=<? echo $script ?>>Summary</a></li>
 	<li><a href=<? echo $script ?>?mode=settings>Settings</a></li>
 	<li><a href=<? echo $script ?>?mode=showcaptions>Manage Images</a></li>
+	<li><a href=<? echo $script ?>?mode=upload>Upload</a></li>
 	<li><a href=<? echo $script ?>?mode=checkthumbs>Thumbnails</a>
 		<ul>
 			<li><a href=<? echo $script ?>?mode=checkthumbs>Check</a></li>
@@ -174,6 +175,34 @@ else if ($mode == "updatecaptions") {
 
 		update_images($updates);
 	}
+}
+else if ($mode == "upload") {
+?>
+<h3>Upload</h3>
+<p>Select a file to upload. It must be a jpg or gif.</p>
+	<form action="" enctype="multipart/form-data" method="post">
+		File <input type="file" name="image" value="" />
+		<br />
+		<br />
+		<input type="submit" name="submit" value="Upload" />
+	</form>
+
+<?php
+
+	  $allowedExtensions = array("gif", "jpg", "jpeg");
+	  foreach ($_FILES as $file) {
+	    if ($file['tmp_name'] > '') {
+	      if (!in_array(end(explode(".",
+	            strtolower($file['name']))),
+	            $allowedExtensions)) {
+	       die(
+		$file['name'].' is an invalid file type!<br/>'
+	    	);
+	      }
+	    }
+	  }
+	move_uploaded_file($_FILES['image']['tmp_name'],"../gallery_images/".$_FILES['image']['name']);
+
 }
 else if ($mode == "checkthumbs") {
 	print "<h3>Thumbnails</h3>";
