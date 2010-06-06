@@ -1,0 +1,99 @@
+body {
+	width:900px;
+	margin: auto;
+	font-family: Verdana, arial, sans-serif;
+}
+
+h1 {
+	font-size: 24px;
+	font-family: Verdana, arial, sans-serif;
+	text-transform: uppercase;
+	padding: 0 0 0 10px;
+	letter-spacing: 1px;
+}
+
+
+a {
+	color: #f00;
+}
+
+.quicknailcontent {}
+
+p.subtitle{
+	padding: 0 0 0 10px;
+}
+
+.highslide-gallery{
+	clear:left;}
+	
+.pic_div{ float: left;
+	padding:10px 10px;}
+
+/*-----FOOTER--------*/	
+.footer{
+	clear: both;
+	padding: 0 0 0 10px;
+}
+
+.numPages {
+	float: left;
+	text-transform: uppercase;
+	font-size: 10px;
+}
+
+.paginate {
+	float: left;
+	font-size: 10px;
+}
+
+.pageNumber {
+	border:1px solid #e3e3e3;
+	font-size:14px;
+	/*width:12px;*/
+	height:16px;
+	padding: 0px 5px 4px 3px;
+	float: left;
+	margin-right:3px;
+}
+
+.currentPage {
+	background-color: red;
+	color: white;
+	font-size:14px;
+	/*width:14px;*/
+	height:18px;
+	padding: 0px 5px 4px 5px;
+	float: left;
+	margin-right:3px;
+}
+
+.nav {
+	display: inline-block;
+}
+
+.prev{
+	float: left;
+	padding: 0px 9px 2px 3px;
+	margin-right:5px;
+	font-size:14px;
+	border:1px solid #e3e3e3;
+}
+
+.next{
+	float: left;
+	padding: 0px 3px 2px 3px;
+	margin: 0 5px 0 0;
+	font-size:14px;
+	border:1px solid #e3e3e3;
+}
+
+.credit{
+	font-size: .7em;
+	margin-top:10px;
+	color: #9d9d9d;
+	text-transform: uppercase;
+}
+
+.credit a{
+	color: #bd7d7d;
+}
