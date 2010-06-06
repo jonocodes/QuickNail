@@ -337,11 +337,9 @@ function handler (e) {
    if (keyval == 110) { location ="$next"; return true; }
    return; }
 </script>
-
 <style>
 .quicknailcontent a {	text-decoration:none;	}
 .quicknailcontent a:hover {  color: #FF9933; text-decoration: none; }
-.picborder { border: 1px solid #C2C2C2 }
 .quicknailcontent img { BORDER-style: none; }
 </style>
 HEAD;
@@ -445,42 +443,93 @@ function showGallery()
 
 <style>
 
-.quicknailcontent * {
-	font-family: Verdana, Helvetica;
-	font-size: 10pt;
-}
-
-.quicknailcontent h1 {  font-size: 18pt; }
 
 .quicknailcontent a {	text-decoration:none;	}
 .quicknailcontent a:hover {  color: #FF9933; text-decoration: none; }
-.picborder { border: 1px solid #C2C2C2 }
 .quicknailcontent img { BORDER-style: none; }
 
-.quicknailcontent a.linkopacity img {
-	filter:alpha(opacity=100); 
-	-moz-opacity: 1.0;
-	opacity: 1.0;
-	-khtml-opacity: 1.0;
-	}
-
-.quicknailcontent a.linkopacity:hover img {
-	filter:alpha(opacity=80);
-	-moz-opacity: 0.8;
-	opacity: 0.8;
-	-khtml-opacity: 0.8;
+.footer{
+	clear: both;
+	padding: 0 0 0 10px;
 }
 
+.numPages {
+	float: left;
+	text-transform: uppercase;
+	font-size: 10px;
+}
+
+.paginate {
+	float: left;
+	font-size: 10px;
+}
+
+.pageNumber {
+	border:1px solid #e3e3e3;
+	font-size:14px;
+	/*width:12px;*/
+	height:16px;
+	padding: 0px 5px 4px 3px;
+	float: left;
+	margin-right:3px;
+}
+
+.currentPage {
+	background-color: red;
+	color: white;
+	font-size:14px;
+	/*width:14px;*/
+	height:18px;
+	padding: 0px 5px 4px 5px;
+	float: left;
+	margin-right:3px;
+}
+
+.nav {
+	display: inline-block;
+}
+
+.prev{
+	float: left;
+	padding: 0px 9px 2px 3px;
+	margin-right:5px;
+	font-size:14px;
+	border:1px solid #e3e3e3;
+}
+
+.next{
+	float: left;
+	padding: 0px 3px 2px 3px;
+	margin: 0 5px 0 0;
+	font-size:14px;
+	border:1px solid #e3e3e3;
+}
+
+.credit{
+	font-size: .7em;
+	margin-top:10px;
+	color: #9d9d9d;
+	text-transform: uppercase;
+}
+
+.credit a{
+	color: #bd7d7d;
+}
+
+
+
 </style>
+	<link href="style.css" rel="stylesheet" type="text/css" />
+
 HEAD;
 
 	$credit=<<<CREDIT
-	<font size=-1>gallery powered by <a href=$quicknail_homepage>QuickNail</a></font>
+	gallery powered by <a href=$quicknail_homepage>QuickNail</a>
 CREDIT;
 
-	$content .= "<div class=quicknailcontent><h1 align=center>" . $conf[general][title] . "</h1>";
-	$content .= "<p /><center>" . $conf[general][subtitle] . "</center>";
-	$content .= "<p /><div class=highslide-gallery><table width=100% cellspacing=10 cellpadding=0 border=0><tr>";
+	$content .= "<div class=quicknailcontent><h1>" . $conf[general][title] . "</h1>";
+	$content .= "<p /><p class=\"subtitle\">" . $conf[general][subtitle] . "</p>";
+	$content .= "<p /><div class=highslide-gallery>";
 
 	$startindex = ($page - 1) * $conf[gallery][picsperpage];
 	$endindex = $startindex + $conf[gallery][picsperpage] - 1 ;
@@ -499,47 +548,55 @@ CREDIT;
 		else
 			$imghref = "<a class=linkopacity href=$altgalleryscript?mode=enlarge&filename=" . urlencode($pictures[$loop][file]) . ">";
 		
-		$content .= "\n\t<td align=center>\n\t\t<table cellpadding=0 cellspacing=5 class=picborder><tr><td>$imghref";
-		$content .= "<img src=\"" . $pictures[$loop][thumbnail] . "\" title=\"Click to enlarge\" /></a>$caption</td></tr></table>";
+		$content .= "<div class=pic_div>$imghref";
+		$content .= "<img src=\"" . $pictures[$loop][thumbnail] . "\" title=\"Click to enlarge\" /></a>$caption</div>";
 		
 		if ($conf[gallery][show_image_names] === true)
 			$content .= ereg_replace("(.*\/)([^\/]*)","\\2", chopext($pictures[$loop][file]));
-			
-		$content .= "\n\t</td>";
-		if ( (($loop+1) % $conf[gallery][picsperline]) == 0) $content .= "\n</tr><tr><td>&nbsp;</td></tr><tr>\n";
+
+		if ( (($loop+1) % $conf[gallery][picsperline]) == 0) $content .= "</div><div class=highslide-gallery>";
 	}
 
-	$content .= "</tr></table></div>";
-
-	$content .= "<center>Viewing images " . ($startindex + 1) ." through " . ($endindex + 1) ." of ". count($pictures);
+	$content .= "</div>"; //end containing div
 	
+	$content .= "<div class=footer>"; //begin footer div
+
+	// $content .= "Viewing images " . ($startindex + 1) ." through " . ($endindex + 1) ." of ". count($pictures);
+	$content .="<div class=nav>";
 	if ($numpages > 1)
 	{
-		$content .= "<br>Pages ($numpages): ";
+		// $content .= "<div class=numPages >Pages: $numpages </div>";
+		
+		$content .= "<div class=paginate>";
 		
 		if ($page > 1)
 		{
-			$content .= "<a href=$altgalleryscript?page=1>&lt;&lt;</a> <a href=$altgalleryscript?page=". ($page - 1) .">&lt;Prev</a> ";
+			$content .= "<div class=prev><a href=$altgalleryscript?page=1>&lt;&lt;</a></div><div class=prev> <a href=$altgalleryscript?page=". ($page - 1) .">Prev</a> </div>";
 		}
 		for ($i=1; $i<=$numpages; $i++)
 		{
-			if ($page == $i)	$content .= "[$i] ";
-			else	$content .= "<a href=$altgalleryscript?page=$i>$i</a> ";
+			if ($page == $i)	$content .= "<div class=currentPage>$i</div>";
+			else	$content .= "<a href=$altgalleryscript?page=$i><div class=pageNumber>$i</div></a> ";
 		}
 		if ($page < $numpages)
 		{
-			$content .= "<a href=$altgalleryscript?page=". ($page + 1) .">Next&gt;</a> ";
-			$content .= "<a href=$altgalleryscript?page=$numpages>&gt;&gt;</a> ";
+			$content .= "<div class=next><a href=$altgalleryscript?page=". ($page + 1) .">Next</a></div>";
+			$content .= "<div class=next><a href=$altgalleryscript?page=$numpages>&gt;&gt;</a></div> ";
 		}
+		
+		$content .= "</div>";
 	}
-	$content .= "</center>";
+	
+	$content .="</div>";
 	
 	if (!$conf[image][lightbox])
-		$content .= "<br><center><a href=\"$altgalleryscript?mode=slideshow&filename=" . urlencode($pictures[0][file]) . "\">[slideshow]</a></center>";
-	
+		$content .= "<br /><a href=\"$altgalleryscript?mode=slideshow&filename=" . urlencode($pictures[0][file]) . "\">[slideshow]</a>";
+	$content .="<div class=credit>";
 	if ($conf[gallery][show_credit])	$content .= $credit;
+	$content .= "</div>";
 
 	$content .= "</div>";
+	
 
 	return generate_page($template_text, $gallery_header, $conf[general][title], $content);
 }
@@ -598,6 +655,7 @@ function load_config($configfile) {
 	else {
 		$template_text =<<<TMPL
 	<html><head><title>% QUICKNAIL_TITLE %</title>
+	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
 	<style type=text/css>IMG { BORDER-style: none; }</style>
 	% QUICKNAIL_HEAD %
 	</head><body bgcolor=white>
