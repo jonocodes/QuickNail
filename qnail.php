@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * QuickNail by Jono - jonojuggles@gmail.com
  */
@@ -519,8 +519,6 @@ function showGallery()
 
 
 </style>
-	<link href="style.css" rel="stylesheet" type="text/css" />
-
 HEAD;
 
 	$credit=<<<CREDIT
