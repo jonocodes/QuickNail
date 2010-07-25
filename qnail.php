@@ -653,7 +653,6 @@ function load_config($configfile) {
 	else {
 		$template_text =<<<TMPL
 	<html><head><title>% QUICKNAIL_TITLE %</title>
-	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
 	<style type=text/css>IMG { BORDER-style: none; }</style>
 	% QUICKNAIL_HEAD %
 	</head><body bgcolor=white>
