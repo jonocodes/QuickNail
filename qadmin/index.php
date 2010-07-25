@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *
  * QuickNail by Jono - jonojuggles@gmail.com

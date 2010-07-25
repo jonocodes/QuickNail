@@ -1,4 +1,4 @@
-<? $qncustom = true; include ('qnail.php'); ?>
+<?php $qncustom = true; include ('qnail.php'); ?>
 
 <html>
 <head>

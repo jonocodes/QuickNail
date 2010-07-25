@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *
  * QuickNail by Jono - jonojuggles@gmail.com
@@ -115,20 +115,20 @@ width: 100%;
 <div class="innertube">
 
 <h1>QuickNail Admin</h1>
-<h2><? echo $conf[general][title]; ?></h2>
+<h2><?php echo $conf[general][title]; ?></h2>
 
 <br>
 <ul class=qmenu>
-	<li><a href=<? echo $script ?>>Summary</a></li>
-	<li><a href=<? echo $script ?>?mode=settings>Settings</a></li>
-	<li><a href=<? echo $script ?>?mode=showcaptions>Manage Images</a></li>
-	<li><a href=<? echo $script ?>?mode=upload>Upload</a></li>
-	<li><a href=<? echo $script ?>?mode=checkthumbs>Thumbnails</a>
+	<li><a href=<?php echo $script ?>>Summary</a></li>
+	<li><a href=<?php echo $script ?>?mode=settings>Settings</a></li>
+	<li><a href=<?php echo $script ?>?mode=showcaptions>Manage Images</a></li>
+	<li><a href=<?php echo $script ?>?mode=upload>Upload</a></li>
+	<li><a href=<?php echo $script ?>?mode=checkthumbs>Thumbnails</a>
 		<ul>
-			<li><a href=<? echo $script ?>?mode=checkthumbs>Check</a></li>
-			<li><a href=<? echo $script ?>?mode=generatemissingthumbs>Generate Missing</a></li>
-			<li><a href=# onclick="confirmation('regenerate all thumbnails', '<? echo $script ?>?mode=regeneratethumbs')">Re-generate All</a></li>
-			<li><a href=# onclick="confirmation('delete all thumbnails', '<? echo $script ?>?mode=deletethumbs')">Delete All</a></li>
+			<li><a href=<?php echo $script ?>?mode=checkthumbs>Check</a></li>
+			<li><a href=<?php echo $script ?>?mode=generatemissingthumbs>Generate Missing</a></li>
+			<li><a href=# onclick="confirmation('regenerate all thumbnails', '<?php echo $script ?>?mode=regeneratethumbs')">Re-generate All</a></li>
+			<li><a href=# onclick="confirmation('delete all thumbnails', '<?php echo $script ?>?mode=deletethumbs')">Delete All</a></li>
 		</ul>
 	</li>
 </ul>
@@ -136,9 +136,9 @@ width: 100%;
 
 <ul class=qmenu>
 	<li><a href=../qnail.php >View gallery</a></li>
-	<li><a href=<? echo $quicknail_homepage ?> >QuickNail Home Page</a></li>
-	<li><a href=<? echo $quicknail_homepage ?>/updates.php?fromversion=<? echo $quicknail_version ?> >QuickNail Updates</a></li>
-	<li><a href=<? echo $script ?>?mode=logout>Logout</a></center></li>
+	<li><a href=<?php echo $quicknail_homepage ?> >QuickNail Home Page</a></li>
+	<li><a href=<?php echo $quicknail_homepage ?>/updates.php?fromversion=<?php echo $quicknail_version ?> >QuickNail Updates</a></li>
+	<li><a href=<?php echo $script ?>?mode=logout>Logout</a></center></li>
 </ul>
 
 </div>
@@ -150,7 +150,7 @@ width: 100%;
 
 <table border=0 width=85% height=90% align=center><tr><td td valign=top>
 
-<?
+<?php
 
 
 if ($mode == "showcaptions") {
