@@ -1,5 +1,7 @@
 No need to create thumbnails, or resize your images, or write any HTML. All you need is some web space. There are many options that can be set in the config file if desired.
 
+![Screen shot](http://quicknail.foodnotblogs.com/screenshot.png)
+
 Quick setup
 -----------
 
