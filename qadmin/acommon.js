@@ -1,7 +1,3 @@
-/* 
- * QuickNail
- * 
- */
 
 function confirmation(op, loc) {
 	var answer = confirm("Are you sure you want to " + op + "?");

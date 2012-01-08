@@ -1,10 +1,11 @@
 <?php
 /**
- * QuickNail by Jono - jonojuggles@gmail.com
+ * QuickNail by Jono
+ *  https://github.com/jonocodes/QuickNail
  */
 
-$quicknail_homepage = "http://quicknail.foodnotblogs.com";
-$quicknail_version="0.5.1-unstable";
+$quicknail_homepage = "https://github.com/jonocodes/QuickNail";
+$quicknail_version="0.5.2";
 
 // INI file read/write functions
 

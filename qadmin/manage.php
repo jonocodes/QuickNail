@@ -1,9 +1,4 @@
 <?php
-/**
- *
- * QuickNail by Jono - jonojuggles@gmail.com
- *
- */
 
 include_once("acommon.php");
 

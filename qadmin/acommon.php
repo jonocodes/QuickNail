@@ -1,10 +1,4 @@
 <?php
-/**
- *
- * QuickNail by Jono - jonojuggles@gmail.com
- *
- */
-
 
 function newIPTC($image_name, $fields)
 {

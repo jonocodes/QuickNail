@@ -1,9 +1,4 @@
 <?php
-/**
- *
- * QuickNail by Jono - jonojuggles@gmail.com
- *
- */
 
 function logged_in() {
 	if ($_SESSION[qn3gath] === true)
